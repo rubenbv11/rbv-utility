@@ -2,14 +2,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const darkModeToggle = document.getElementById("darkModeToggle");
   const modeIndicator = document.getElementById("modeIndicator");
 
-  // Cargar estado guardado del modo oscuro
+  // Cargar estado del modo oscuro
   const isDark = localStorage.getItem("darkMode") === "true";
   if (isDark) {
     document.body.classList.add("dark");
-    darkModeToggle.textContent = "☀️";
+    if (darkModeToggle) darkModeToggle.textContent = "☀️";
     if (modeIndicator) modeIndicator.textContent = "Modo Oscuro";
   } else {
-    darkModeToggle.textContent = "🌙";
+    if (darkModeToggle) darkModeToggle.textContent = "🌙";
     if (modeIndicator) modeIndicator.textContent = "Modo Claro";
   }
 
@@ -49,45 +49,90 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Validación formulario (solo si existe)
-  const form = document.getElementById('resumenForm');
-  const message = document.getElementById('message');
+  // Validación formulario - Resumen Spotify
+  const resumenForm = document.getElementById('resumenForm');
+  const resumenMessage = document.getElementById('message');
 
-  if (form && message) {
-    form.addEventListener('submit', (e) => {
+  if (resumenForm && resumenMessage) {
+    resumenForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const email = form.email.value.trim();
+      const email = resumenForm.email.value.trim();
       if (!email || !email.includes('@')) {
-        message.textContent = 'Por favor introduce un correo válido.';
-        message.className = 'message error';
+        resumenMessage.textContent = 'Por favor introduce un correo válido.';
+        resumenMessage.className = 'message error';
         return;
       }
 
-      message.textContent = 'Generando tu resumen...';
-      message.className = 'message';
+      resumenMessage.textContent = 'Generando tu resumen...';
+      resumenMessage.className = 'message';
 
       setTimeout(() => {
-        message.textContent = '¡Resumen solicitado con éxito! Revisa tu correo.';
-        message.className = 'message success';
-        form.reset();
+        resumenMessage.textContent = '¡Resumen solicitado con éxito! Revisa tu correo.';
+        resumenMessage.className = 'message success';
+        resumenForm.reset();
       }, 2000);
     });
   }
-});
-// Cursor personalizado
+
+  // Validación formulario - Contacto
+  const contactForm = document.getElementById('contactForm');
+  const contactMessage = document.getElementById('successMessage');
+  const errorMessage = document.getElementById('errorMessage');
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (!contactForm.checkValidity()) {
+        contactForm.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(contactForm);
+
+      fetch('https://formspree.io/f/mkgbrnvo',  {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          contactForm.reset();
+          if (contactMessage) contactMessage.style.display = 'block';
+          if (errorMessage) errorMessage.style.display = 'none';
+        } else {
+          response.json().then(json => {
+            console.error(json);
+            if (errorMessage) errorMessage.style.display = 'block';
+            if (contactMessage) contactMessage.style.display = 'none';
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        if (errorMessage) errorMessage.style.display = 'block';
+        if (contactMessage) contactMessage.style.display = 'none';
+      });
+    });
+  }
+
 const cursor = document.querySelector('.custom-cursor');
 
-document.addEventListener('mousemove', e => {
-  const { clientX: x, clientY: y } = e;
-  if (cursor) {
-    cursor.style.transform = `translate(${x}px, ${y}px)`;
-  }
-});
+if (cursor) {
+  document.addEventListener('mousemove', e => {
+    requestAnimationFrame(() => {
+      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      cursor.style.transition = 'none';
+    });
+  });
 
-document.addEventListener('mousedown', () => {
-  if (cursor) cursor.classList.add('expand');
-});
-document.addEventListener('mouseup', () => {
-  if (cursor) cursor.classList.remove('expand');
+  document.addEventListener('mousedown', () => {
+    cursor.classList.add('expand');
+  });
+
+  document.addEventListener('mouseup', () => {
+    cursor.classList.remove('expand');
+  });
+}
 });

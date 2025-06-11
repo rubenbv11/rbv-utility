@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contacto - RBV Utility</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Fondo animado -->
+  <div class="bg-circles" aria-hidden="true">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="banner" aria-label="Logo principal y navegación">
+    <span class="logo">R² Utility</span>
+    <nav class="topnav" aria-label="Navegación principal">
+      <a href="home.html">Inicio</a>
+      <button class="dropdown-trigger" id="servicios-btn" aria-haspopup="true" aria-expanded="false">Servicios ▾</button>
+      <div class="dropdown-menu" id="servicios-submenu" role="menu" aria-labelledby="servicios-btn">
+        <a href="spotify-summary.html" role="menuitem">Resumen Spotify</a>
+      </div>
+      <a href="#">Configuración</a>
+      <a href="contacto.html" class="active" aria-current="page">Contacto</a>
+      <!-- Botón modo oscuro -->
+      <button id="darkModeToggle" title="Cambiar modo">🌙</button>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="container flex-grow" role="main" tabindex="-1">
+    <h1>Contacto</h1>
+    <p class="subtitle">¿Tienes alguna duda? ¡Escríbeme y estaré encantado de ayudarte.</p>
+
+    <!-- Formulario de contacto -->
+    <section class="features">
+      <form id="contactForm">
+        <label for="name">Nombre</label>
+        <input type="text" id="name" name="name" placeholder="Tu nombre" required />
+
+        <label for="email">Correo Electrónico</label>
+        <input type="email" id="email" name="email" placeholder="Tu correo electrónico" required />
+
+        <label for="message">Mensaje</label>
+        <textarea id="message" name="message" rows="5" placeholder="Escribe tu mensaje..." required></textarea>
+
+        <button type="submit" class="btn-glow">Enviar Mensaje</button>
+      </form>
+
+      <div class="message success" id="successMessage">Gracias por tu mensaje. Te responderé pronto.</div>
+      <div class="message error" id="errorMessage">Hubo un problema enviando tu mensaje. Inténtalo más tarde.</div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p class="footer-text">
+        &copy; 2025 R² Utility. Todos los derechos reservados.
+      </p>
+      <p class="footer-links">
+        <a href="#" class="footer-link">Política de privacidad</a>
+        <span class="footer-separator">|</span>
+        <a href="#" class="footer-link">Términos de uso</a>
+        <span class="footer-separator">|</span>
+        <a href="contacto.html" class="footer-link">Contacto</a>
+      </p>
+      <!-- Redes sociales -->
+      <div class="footer-social">
+        <a href="#" class="footer-link" aria-label="Twitter">🐦 Twitter</a>
+        <span class="footer-separator">•</span>
+        <a href="#" class="footer-link" aria-label="GitHub">💻 GitHub</a>
+        <span class="footer-separator">•</span>
+        <a href="#" class="footer-link" aria-label="LinkedIn">💼 LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cursor personalizado -->
+  <div class="custom-cursor"></div>
+
+  <!-- Script JS Compartido -->
+  <script src="script.js"></script>
+
+  <!-- Script del formulario -->
+  <script>
+    const form = document.getElementById('contactForm');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(form);
+
+      fetch('https://formspree.io/f/mkgbrnvo',  {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          form.reset();
+          successMessage.style.display = 'block';
+          errorMessage.style.display = 'none';
+        } else {
+          response.json().then(json => {
+            console.error(json);
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+      });
+    });
+  </script>
+
+</body>
+</html>
