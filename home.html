@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inicio | r² Utility</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Fondo animado -->
+  <div class="bg-circles" aria-hidden="true">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="banner" aria-label="Logo principal y navegación">
+    <span class="logo">r² Utility</span>
+    <nav class="topnav" aria-label="Navegación principal">
+      <a href="home.html" class="active" aria-current="page">Inicio</a>
+      <button class="dropdown-trigger" id="servicios-btn" aria-haspopup="true" aria-expanded="false">Servicios ▾</button>
+      <div class="dropdown-menu" id="servicios-submenu" role="menu" aria-labelledby="servicios-btn">
+        <a href="spotify-summary.html" role="menuitem">Resumen Spotify</a>
+      </div>
+      <a href="#">Configuración</a>
+      <a href="#">Ayuda</a>
+      <!-- Botón modo oscuro -->
+      <button id="darkModeToggle" title="Cambiar modo">🌙</button>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="container flex-grow" role="main" tabindex="-1">
+    <h1>
+      Bienvenido a 
+      <span class="title-r">r<span class="title-superscript">2</span> Utility</span>
+    </h1>
+    <p class="subtitle">Herramientas únicas, simples y hechas con amor.</p>
+
+    <!-- Sección de herramientas destacadas -->
+    <section class="features">
+      <h2>Herramientas Destacadas</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h3>Resumen de Spotify</h3>
+          <p>Descubre cuáles fueron tus canciones y artistas favoritos del año.</p>
+          <a href="spotify-summary.html" class="btn-small">Ver más</a>
+        </div>
+        <!-- Aquí puedes agregar más tarjetas cuando tengas más herramientas -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 mt-auto text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 transition-colors duration-300">
+    &copy; 2025 r² Utility. Todos los derechos reservados.
+  </footer>
+
+  <!-- Script JS Compartido -->
+  <script src="script.js"></script>
+</body>
+</html>

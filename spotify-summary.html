@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resumen Spotify | RBV Utility</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Fondo animado -->
+  <div class="bg-circles" aria-hidden="true">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </div>
+
+  <!-- Header con menú superior -->
+  <header class="banner" aria-label="Logo principal y navegación">
+    <span class="logo">RBV Utility</span>
+    <nav class="topnav" aria-label="Navegación principal">
+      <a href="home.html">Inicio</a>
+      <button class="dropdown-trigger" id="servicios-btn" aria-haspopup="true" aria-expanded="false">Servicios ▾</button>
+      <div class="dropdown-menu" id="servicios-submenu" role="menu" aria-labelledby="servicios-btn">
+        <a href="spotify-summary.html" role="menuitem">Resumen Spotify</a>
+      </div>
+      <a href="#">Configuración</a>
+      <a href="#">Ayuda</a>
+      <button id="darkModeToggle" title="Cambiar modo">🌙</button>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="container" role="main" tabindex="-1">
+    <h1>Solicita tu resumen de Spotify</h1>
+    <p class="subtitle">Elige el tipo de resumen que quieres recibir</p>
+
+    <form id="resumenForm" novalidate>
+      <select id="tipoResumen" name="tipoResumen" aria-label="Tipo de resumen">
+        <option value="semanal">Semanal</option>
+        <option value="mensual">Mensual</option>
+        <option value="anual">Anual</option>
+      </select>
+      <input type="email" id="email" name="email" placeholder="Tu correo electrónico" aria-label="Correo electrónico" required />
+      <button type="submit" class="btn-glow">Solicitar resumen</button>
+      <p id="message" role="alert" aria-live="assertive" class="message"></p>
+    </form>
+  </main>
+    <!-- Footer -->
+  <footer class="py-6 mt-auto text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 transition-colors duration-300">
+    &copy; 2025 RBV Utility. Todos los derechos reservados.
+  </footer>
+
+  <!-- Script JS Compartido -->
+  <script src="script.js"></script>
+</body>
+</html>
