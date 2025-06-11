@@ -567,3 +567,37 @@ body.dark .footer {
 body.dark .footer-logo .logo {
   color: #f9fafb;
 }
+/* === Cursor personalizado === */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #FCD53F;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+  will-change: transform;
+}
+
+/* Efecto al hacer hover sobre botones u otros elementos */
+button:hover ~ .custom-cursor,
+button:focus ~ .custom-cursor,
+h1:hover ~ .custom-cursor,
+.custom-cursor.expand {
+  width: 40px;
+  height: 40px;
+  background-color: #FCD53F; /* Más intenso al hacer clic */
+}
+/* Ocultar cursor del sistema globalmente */
+* {
+  cursor: none !important;
+}
+
+/* Mostrar cursor solo en inputs y textareas */
+input, textarea, select {
+  cursor: text !important;
+}

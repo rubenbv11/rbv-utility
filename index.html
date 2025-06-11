@@ -179,6 +179,40 @@
         transform: translateY(0);
       }
     }
+/* === Cursor personalizado === */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #FCD53F;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+  will-change: transform;
+}
+
+/* Efecto al hacer hover sobre botones u otros elementos */
+button:hover ~ .custom-cursor,
+button:focus ~ .custom-cursor,
+h1:hover ~ .custom-cursor,
+.custom-cursor.expand {
+  width: 40px;
+  height: 40px;
+  background-color: #FCD53F; /* Más intenso al hacer clic */
+}
+/* Ocultar cursor del sistema globalmente */
+* {
+  cursor: none !important;
+}
+
+/* Mostrar cursor solo en inputs y textareas */
+input, textarea, select {
+  cursor: text !important;
+}
   </style>
 </head>
 <body>
@@ -194,7 +228,8 @@
     <p class="subtitle">Herramientas personales únicas diseñadas para tus necesidades.</p>
     <button id="enterBtn" class="glow-button" aria-label="Entrar a la aplicación">Entrar</button>
   </div>
-
+<!-- Cursor personalizado -->
+<div class="custom-cursor"></div>
   <script>
     const enterBtn = document.getElementById('enterBtn');
     const title = document.getElementById('animatedTitle');
@@ -228,6 +263,23 @@
         }, 700);
       }, 1000); // Tiempo total de animación de letras + desvanecido
     });
+    // Cursor personalizado
+const cursor = document.querySelector('.custom-cursor');
+
+document.addEventListener('mousemove', e => {
+  const { clientX: x, clientY: y } = e;
+  if (cursor) {
+    cursor.style.transform = `translate(${x}px, ${y}px)`;
+  }
+});
+
+// Opcional: efecto al hacer clic
+document.addEventListener('mousedown', () => {
+  if (cursor) cursor.classList.add('expand');
+});
+document.addEventListener('mouseup', () => {
+  if (cursor) cursor.classList.remove('expand');
+});
   </script>
 
 </body>

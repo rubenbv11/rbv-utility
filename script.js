@@ -75,3 +75,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+// Cursor personalizado
+const cursor = document.querySelector('.custom-cursor');
+
+document.addEventListener('mousemove', e => {
+  const { clientX: x, clientY: y } = e;
+  if (cursor) {
+    cursor.style.transform = `translate(${x}px, ${y}px)`;
+  }
+});
+
+document.addEventListener('mousedown', () => {
+  if (cursor) cursor.classList.add('expand');
+});
+document.addEventListener('mouseup', () => {
+  if (cursor) cursor.classList.remove('expand');
+});
