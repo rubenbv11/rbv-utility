@@ -49,31 +49,47 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Validación formulario - Resumen Spotify
-  const resumenForm = document.getElementById('resumenForm');
-  const resumenMessage = document.getElementById('message');
+ // Validación formulario - Resumen Spotify
+const resumenForm = document.getElementById('resumenForm');
+const resumenMessage = document.getElementById('message');
 
-  if (resumenForm && resumenMessage) {
-    resumenForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+if (resumenForm && resumenMessage) {
+  resumenForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-      const email = resumenForm.email.value.trim();
-      if (!email || !email.includes('@')) {
-        resumenMessage.textContent = 'Por favor introduce un correo válido.';
-        resumenMessage.className = 'message error';
-        return;
-      }
+    const email = resumenForm.email.value.trim();
+    if (!email || !email.includes('@')) {
+      resumenMessage.textContent = 'Por favor introduce un correo válido.';
+      resumenMessage.className = 'message error';
+      return;
+    }
 
-      resumenMessage.textContent = 'Generando tu resumen...';
-      resumenMessage.className = 'message';
+    resumenMessage.textContent = 'Solicitando resumen...';
+    resumenMessage.className = 'message';
 
-      setTimeout(() => {
-        resumenMessage.textContent = '¡Resumen solicitado con éxito! Revisa tu correo.';
-        resumenMessage.className = 'message success';
-        resumenForm.reset();
-      }, 2000);
+    // Enviar datos al webhook de n8n
+      fetch("https://n8n.rbv-utility.es/webhook/spotify-summary",  {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          email: resumenForm.email.value.trim(),
+          tipoResumen: resumenForm.tipoResumen.value 
+        })
+      })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Respuesta de n8n:", data);
+      resumenMessage.textContent = "¡Resumen solicitado! Revisa tu correo pronto.";
+      resumenMessage.className = "message success";
+      resumenForm.reset();
+    })
+    .catch(error => {
+      console.error("Error al enviar:", error);
+      resumenMessage.textContent = "Hubo un problema. Inténtalo más tarde.";
+      resumenMessage.className = "message error";
     });
-  }
+  });
+}
 
   // Validación formulario - Contacto
   const contactForm = document.getElementById('contactForm');

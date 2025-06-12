@@ -602,3 +602,24 @@ textarea,
 select {
   cursor: text !important;
 }
+/* === Botón de inicio de sesión con Spotify === */
+.login-spotify {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* Espacio entre el logo y el texto */
+  background-color: #1db954;
+  color: #fff;
+  border: none;
+  text-decoration: none;
+  padding: 14px 24px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 28px;
+  box-shadow: 0 0 10px rgba(29, 185, 84, 0.4), 0 4px 20px rgba(29, 185, 84, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.login-spotify:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(29, 185, 84, 0.5), 0 6px 30px rgba(29, 185, 84, 0.4);
+}

@@ -30,11 +30,28 @@
     </nav>
   </header>
 
-  <!-- Contenido principal -->
-  <main class="container" role="main" tabindex="-1">
-    <h1>Solicita tu resumen de Spotify</h1>
-    <p class="subtitle">Elige el tipo de resumen que quieres recibir</p>
+<!-- Contenido principal -->
+<main class="container" role="main" tabindex="-1">
+  <h1>Solicita tu resumen de Spotify</h1>
+  <p class="subtitle">Inicia sesión con Spotify y recibe tu resumen personalizado.</p>
 
+<!-- Botón Iniciar Sesión -->
+<div id="loginSection">
+<a href="https://accounts.spotify.com/authorize?
+client_id=c54d0fa62f254d86b2735844b1690a50&
+response_type=code&
+redirect_uri=https://n8n.rbv-utility.es/rest/oauth2-credential/callback&
+scope=user-top-read&
+state=spotify-summary"
+class="btn-glow login-spotify">
+  <img src="assets/spotify-logo.png" alt="Spotify Logo" width="24" height="24" class="spotify-logo">
+  Inicia sesión con Spotify
+</a>
+  <p class="info-text"><br> Solo usamos tu información para generar tu resumen.</p>
+</div>
+
+  <!-- Formulario (oculto hasta que inicie sesión) -->
+  <div id="formSection" style="display: none;">
     <form id="resumenForm" novalidate>
       <select id="tipoResumen" name="tipoResumen" aria-label="Tipo de resumen">
         <option value="semanal">Semanal</option>
@@ -45,7 +62,8 @@
       <button type="submit" class="btn-glow">Solicitar resumen</button>
       <p id="message" role="alert" aria-live="assertive" class="message"></p>
     </form>
-  </main>
+  </div>
+</main>
 <!-- Footer -->
 <footer class="footer">
     <p class="footer-text">
