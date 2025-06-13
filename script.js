@@ -152,3 +152,36 @@ if (cursor) {
   });
 }
 }); 
+
+// === Resumen Spotify ===
+
+const resumenForm = document.getElementById('resumenForm');
+const resumenMessage = document.getElementById('message');
+
+if (resumenForm && resumenMessage) {
+  resumenForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const tipoResumen = document.getElementById('tipoResumen').value;
+
+    // Validación básica del correo
+    if (!email || !email.includes('@')) {
+      resumenMessage.textContent = 'Por favor introduce un correo válido.';
+      resumenMessage.className = 'message error';
+      return;
+    }
+
+    // Codificar datos en state (base64)
+    const state = btoa(JSON.stringify({ email, tipoResumen }));
+
+    // Redirigir a Spotify con state
+    window.location.href = 
+      "https://accounts.spotify.com/authorize?" +
+      "client_id=c54d0fa62f254d86b2735844b1690a50&" +
+      "response_type=code&" +
+      "redirect_uri=https://n8n.rbv-utility.es/webhook/oauth/spotify/callback&" +
+      "scope=user-top-read&" +
+      "state=" + encodeURIComponent(state);
+  });
+}
