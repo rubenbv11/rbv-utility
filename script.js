@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const formData = new FormData(contactForm);
 
-      fetch('https://formspree.io/f/mkgbrnvo',  {
+      fetch('https://formspree.io/f/mkgbrnvo', {
         method: 'POST',
         body: formData,
         headers: { Accept: 'application/json' }
@@ -91,115 +91,171 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-const cursor = document.querySelector('.custom-cursor');
+  // Cursor personalizado
+  const cursor = document.querySelector('.custom-cursor');
 
-if (cursor) {
-  document.addEventListener('mousemove', e => {
-    requestAnimationFrame(() => {
-      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-      cursor.style.transition = 'none';
+  if (cursor) {
+    document.addEventListener('mousemove', e => {
+      requestAnimationFrame(() => {
+        cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        cursor.style.transition = 'none';
+      });
     });
-  });
 
-  document.addEventListener('mousedown', () => {
-    cursor.classList.add('expand');
-  });
+    document.addEventListener('mousedown', () => {
+      cursor.classList.add('expand');
+    });
 
-  document.addEventListener('mouseup', () => {
-    cursor.classList.remove('expand');
-  });
-}
+    document.addEventListener('mouseup', () => {
+      cursor.classList.remove('expand');
+    });
+  }
+
+  // === INICIALIZAR SPOTIFY AL CARGAR LA PÁGINA ===
+  initializeSpotifyForm();
+  handleOAuthResponse();
 }); 
 
-// === Resumen Spotify ===
-const resumenForm = document.getElementById('resumenForm');
-const resumenMessage = document.getElementById('message');
+// === INICIALIZAR FORMULARIO SPOTIFY ===
+function initializeSpotifyForm() {
+  const resumenForm = document.getElementById('resumenForm');
+  const resumenMessage = document.getElementById('message');
 
-if (resumenForm && resumenMessage) {
-  resumenForm.addEventListener('submit', function(e) {
-    e.preventDefault();
+  if (resumenForm && resumenMessage) {
+    resumenForm.addEventListener('submit', function(e) {
+      e.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
-    const tipoResumen = document.getElementById('tipoResumen').value;
-
-    // Validación básica del correo
-    if (!email || !email.includes('@')) {
-      resumenMessage.textContent = 'Por favor introduce un correo válido.';
-      resumenMessage.className = 'message error';
-      return;
-    }
-
-    // Validar tipo de resumen
-    if (!['semanal', 'mensual', 'anual'].includes(tipoResumen)) {
-      resumenMessage.textContent = 'Tipo de resumen inválido.';
-      resumenMessage.className = 'message error';
-      return;
-    }
-
-    try {
-      // Crear objeto state
-      const stateObject = { 
-        email: email, 
-        tipoResumen: tipoResumen,
-        timestamp: Date.now() // Agregar timestamp para debug
-      };
+      const email = document.getElementById('email');
+      const tipoResumen = document.getElementById('tipoResumen');
       
-      // Codificar en base64
-      const stateJson = JSON.stringify(stateObject);
-      const state = btoa(stateJson);
-      
-      console.log('State object:', stateObject);
-      console.log('State JSON:', stateJson);
-      console.log('State encoded:', state);
+      // Verificar que los elementos existen
+      if (!email || !tipoResumen) {
+        console.error('Elementos del formulario no encontrados');
+        showMessage('Error: Formulario no configurado correctamente.', 'error');
+        return;
+      }
 
-      // Verificar que el state se puede decodificar
-      const testDecode = JSON.parse(atob(state));
-      console.log('Test decode:', testDecode);
+      const emailValue = email.value.trim();
+      const tipoResumenValue = tipoResumen.value;
 
-      // Construir URL de autorización
-      const clientId = 'c54d0fa62f254d86b2735844b1690a50';
-      const redirectUri = 'https://n8n.rbv-utility.es/webhook/oauth/spotify/callback';
-      const scopes = 'user-top-read';
-      
-      const authUrl = new URL('https://accounts.spotify.com/authorize');
-      authUrl.searchParams.set('client_id', clientId);
-      authUrl.searchParams.set('response_type', 'code');
-      authUrl.searchParams.set('redirect_uri', redirectUri);
-      authUrl.searchParams.set('scope', scopes);
-      authUrl.searchParams.set('state', state);
-      
-      console.log('Auth URL:', authUrl.toString());
+      // Validación básica del correo
+      if (!emailValue || !emailValue.includes('@')) {
+        showMessage('Por favor introduce un correo válido.', 'error');
+        return;
+      }
 
-      // Mostrar mensaje de carga
-      resumenMessage.textContent = 'Redirigiendo a Spotify...';
-      resumenMessage.className = 'message info';
+      // Validar tipo de resumen
+      if (!['semanal', 'mensual', 'anual'].includes(tipoResumenValue)) {
+        showMessage('Tipo de resumen inválido.', 'error');
+        return;
+      }
 
-      // Redirigir a Spotify
-      window.location.href = authUrl.toString();
-      
-    } catch (error) {
-      console.error('Error al generar state:', error);
-      resumenMessage.textContent = 'Error al procesar la solicitud. Inténtalo de nuevo.';
-      resumenMessage.className = 'message error';
-    }
-  });
+      // Mostrar mensaje de procesamiento
+      showMessage('Redirigiendo a Spotify para autorización...', 'info');
+
+      // Redirigir directamente a Spotify OAuth
+      setTimeout(() => {
+        redirectToSpotifyOAuth(emailValue, tipoResumenValue);
+      }, 1000);
+    });
+  }
 }
 
-// Función para debug - verificar parámetros URL al cargar
-document.addEventListener('DOMContentLoaded', function() {
+// === FUNCIÓN PARA MOSTRAR MENSAJES ===
+function showMessage(text, type) {
+  const resumenMessage = document.getElementById('message');
+  if (resumenMessage) {
+    resumenMessage.textContent = text;
+    resumenMessage.className = `message ${type}`;
+  }
+}
+
+// === FUNCIÓN PARA REDIRIGIR A SPOTIFY OAUTH ===
+function redirectToSpotifyOAuth(email, tipoResumen) {
+  try {
+    const stateObject = { 
+      email: email, 
+      tipoResumen: tipoResumen,
+      timestamp: Date.now()
+    };
+    
+    const stateJson = JSON.stringify(stateObject);
+    const state = btoa(stateJson); // Codificar en base64
+    
+    console.log('Redirecting to Spotify OAuth with state:', state);
+
+    const clientId = 'c54d0fa62f254d86b2735844b1690a50'; // Tu Client ID real
+    const redirectUri = 'https://n8n.rbv-utility.es/webhook/oauth/spotify/callback';
+    const scopes = 'user-top-read user-read-email';
+    
+    const authUrl = new URL('https://accounts.spotify.com/authorize');
+    authUrl.searchParams.set('client_id', clientId);
+    authUrl.searchParams.set('response_type', 'code');
+    authUrl.searchParams.set('redirect_uri', redirectUri);
+    authUrl.searchParams.set('scope', scopes);
+    authUrl.searchParams.set('state', state);
+    authUrl.searchParams.set('show_dialog', 'true'); // Forzar pantalla de autorización
+    
+    // Redirigir inmediatamente
+    window.location.href = authUrl.toString();
+    
+  } catch (error) {
+    console.error('Error en OAuth redirect:', error);
+    showMessage('Error al procesar la solicitud. Inténtalo de nuevo.', 'error');
+  }
+}
+
+// === FUNCIÓN PARA MANEJAR RESPUESTA DE OAUTH ===
+function handleOAuthResponse() {
   const urlParams = new URLSearchParams(window.location.search);
-  console.log('URL params on load:', Object.fromEntries(urlParams));
   
-  // Si hay parámetros de error de Spotify
+  // Si hay código de autorización de Spotify
+  if (urlParams.get('code')) {
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    
+    console.log('Received OAuth code:', code);
+    console.log('Received state:', state);
+    
+    showMessage('✅ Autorización exitosa. Procesando tu resumen...', 'info');
+    
+    // Limpiar URL sin recargar
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
+    
+    // Simular proceso de carga
+    let dots = 0;
+    const loadingInterval = setInterval(() => {
+      dots = (dots + 1) % 4;
+      const dotString = '.'.repeat(dots);
+      showMessage(`🎵 Analizando tu música${dotString}`, 'info');
+    }, 500);
+    
+    // Después de 8 segundos mostrar mensaje de éxito
+    setTimeout(() => {
+      clearInterval(loadingInterval);
+      showMessage('🎉 ¡Resumen enviado a tu correo! Revisa tu bandeja de entrada.', 'success');
+    }, 8000);
+  }
+  
+  // Si hay error de OAuth
   if (urlParams.get('error')) {
     const error = urlParams.get('error');
     const errorDescription = urlParams.get('error_description');
     console.error('Spotify OAuth error:', error, errorDescription);
     
-    if (resumenMessage) {
-      resumenMessage.textContent = `Error de autorización: ${errorDescription || error}`;
-      resumenMessage.className = 'message error';
+    let errorMsg = 'Error de autorización de Spotify.';
+    
+    if (error === 'access_denied') {
+      errorMsg = 'Autorización cancelada. Necesitas dar permisos para generar el resumen.';
+    } else if (errorDescription) {
+      errorMsg = `Error: ${errorDescription}`;
     }
+    
+    showMessage(errorMsg, 'error');
+    
+    // Limpiar URL
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
   }
-});
-
+}
