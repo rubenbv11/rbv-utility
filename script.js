@@ -91,25 +91,108 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Cursor personalizado
-  const cursor = document.querySelector('.custom-cursor');
+// ==========================================
+// 1. CURSOR PREMIUM (Punto + Anillo con retraso)
+// ==========================================
+const cursorDot = document.querySelector('.cursor-dot');
+const cursorOutline = document.querySelector('.cursor-outline');
 
-  if (cursor) {
-    document.addEventListener('mousemove', e => {
-      requestAnimationFrame(() => {
-        cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-        cursor.style.transition = 'none';
-      });
-    });
+if (cursorDot && cursorOutline) {
+  let outlineX = 0;
+  let outlineY = 0;
+  let targetX = 0;
+  let targetY = 0;
 
-    document.addEventListener('mousedown', () => {
-      cursor.classList.add('expand');
-    });
+  document.addEventListener('mousemove', (e) => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+    
+    // El punto sigue al instante
+    cursorDot.style.transform = `translate(${targetX}px, ${targetY}px)`;
+  });
 
-    document.addEventListener('mouseup', () => {
-      cursor.classList.remove('expand');
-    });
+  // Animación suave para el anillo (efecto inercia)
+  function renderCursor() {
+    outlineX += (targetX - outlineX) * 0.15;
+    outlineY += (targetY - outlineY) * 0.15;
+    cursorOutline.style.transform = `translate(${outlineX}px, ${outlineY}px)`;
+    requestAnimationFrame(renderCursor);
   }
+  renderCursor();
+}
+
+// ==========================================
+// 2. TARJETAS 3D Y LUZ GLOW (Efecto Apple)
+// ==========================================
+const cards = document.querySelectorAll('.feature-card');
+
+cards.forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left; // x position within the element.
+    const y = e.clientY - rect.top;  // y position within the element.
+    
+    // Calcula la rotación 3D
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10; // Máximo 10 grados
+    const rotateY = ((x - centerX) / centerX) * 10;
+
+    // Aplica la transformación y mueve el foco de luz
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+  });
+
+  card.addEventListener('mouseleave', () => {
+    // Vuelve a su sitio suavemente
+    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    card.style.transition = 'transform 0.5s ease';
+  });
+
+  card.addEventListener('mouseenter', () => {
+    // Quita la transición al entrar para que el 3D sea instantáneo
+    card.style.transition = 'none';
+  });
+});
+
+// ==========================================
+// 3. EASTER EGG (M A T R I X)
+// ==========================================
+let secretCode = "matrix";
+let inputBuffer = "";
+
+document.addEventListener("keydown", (e) => {
+  inputBuffer += e.key.toLowerCase();
+  
+  // Mantener el buffer del tamaño de la palabra secreta
+  if (inputBuffer.length > secretCode.length) {
+    inputBuffer = inputBuffer.substring(1);
+  }
+  
+  if (inputBuffer === secretCode) {
+    activarModoMatrix();
+  }
+});
+
+function activarModoMatrix() {
+  // Cambia todo a negro y verde hacker
+  document.body.style.backgroundColor = "#000";
+  document.body.style.color = "#0f0";
+  
+  const textos = document.querySelectorAll("h1, h2, h3, p, span, a");
+  textos.forEach(txt => {
+    txt.style.color = "#0f0";
+    txt.style.fontFamily = "monospace";
+    txt.style.textShadow = "0 0 5px #0f0";
+  });
+
+  // Ocultar círculos bonitos
+  const circulos = document.querySelector(".bg-circles");
+  if(circulos) circulos.style.display = "none";
+
+  alert("Neo... El servidor R² ha sido desbloqueado.");
+}
 
   // === INICIALIZAR SPOTIFY AL CARGAR LA PÁGINA ===
   initializeSpotifyForm();

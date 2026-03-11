@@ -539,42 +539,82 @@ body.dark .footer-logo .logo {
   margin-top: 2rem;
 }
 
+/* === Tarjetas Holográficas (Glassmorphism) === */
 .feature-card {
-  background-color: #f3f4f6;
-  border-radius: 12px;
-  padding: 2rem;
-  transition: transform 0.3s ease;
+  position: relative;
+  background: rgba(255, 255, 255, 0.4); /* Cristal semi-transparente */
+  backdrop-filter: blur(12px); /* El efecto de desenfoque por detrás */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  transform-style: preserve-3d; /* Para el efecto 3D */
+  transform: perspective(1000px);
 }
 
-.feature-card:hover {
-  transform: translateY(-5px);
+/* Glow oculto que sigue al ratón */
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(108, 99, 255, 0.15), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: -1;
 }
 
-.feature-card h3 {
-  font-size: 1.25rem;
-  color: #111827;
-  margin-bottom: 1rem;
+.feature-card:hover::before {
+  opacity: 1; /* Se enciende la luz al pasar el ratón */
 }
 
-.feature-card p {
-  color: #6b7280;
-  margin-bottom: 1rem;
+/* Modo oscuro de las tarjetas */
+body.dark .feature-card {
+  background: rgba(31, 41, 55, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* === Cursor personalizado === */
-.custom-cursor {
+/* === Cursor Premium (Punto y Anillo) === */
+* {
+  cursor: none !important; /* Oculta el cursor del sistema */
+}
+
+.cursor-dot,
+.cursor-outline {
   position: fixed;
   top: 0;
   left: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: #FCD53F;
-  pointer-events: none;
-  z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: all 0.3s ease;
-  will-change: transform;
+  border-radius: 50%;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #6c63ff;
+}
+
+.cursor-outline {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(108, 99, 255, 0.5);
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
+  will-change: width, height, transform, border;
+}
+
+/* Efecto al hacer hover en botones */
+button:hover ~ .cursor-outline,
+a:hover ~ .cursor-outline,
+.feature-card:hover ~ .cursor-outline {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(108, 99, 255, 0.1);
+  border-color: transparent;
 }
 
 .custom-cursor.expand {
