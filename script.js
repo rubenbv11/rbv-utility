@@ -92,36 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 // ==========================================
-// 1. CURSOR PREMIUM (Punto + Anillo con retraso)
-// ==========================================
-const cursorDot = document.querySelector('.cursor-dot');
-const cursorOutline = document.querySelector('.cursor-outline');
-
-if (cursorDot && cursorOutline) {
-  let outlineX = 0;
-  let outlineY = 0;
-  let targetX = 0;
-  let targetY = 0;
-
-  document.addEventListener('mousemove', (e) => {
-    targetX = e.clientX;
-    targetY = e.clientY;
-    
-    // El punto sigue al instante
-    cursorDot.style.transform = `translate(${targetX}px, ${targetY}px)`;
-  });
-
-  // Animación suave para el anillo (efecto inercia)
-  function renderCursor() {
-    outlineX += (targetX - outlineX) * 0.15;
-    outlineY += (targetY - outlineY) * 0.15;
-    cursorOutline.style.transform = `translate(${outlineX}px, ${outlineY}px)`;
-    requestAnimationFrame(renderCursor);
-  }
-  renderCursor();
-}
-
-// ==========================================
 // 2. TARJETAS 3D Y LUZ GLOW (Efecto Apple)
 // ==========================================
 const cards = document.querySelectorAll('.feature-card');
@@ -341,4 +311,44 @@ function handleOAuthResponse() {
     const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.replaceState({}, document.title, newUrl);
   }
+}
+
+// ==========================================
+// 4. ANIMACIÓN DE ENTRADA (index.html)
+// ==========================================
+const enterBtn = document.getElementById('enterBtn');
+const animatedTitle = document.getElementById('animatedTitle');
+const mainContent = document.querySelector('.centered-content');
+
+// Comprobamos que estamos en index.html para que no de error en otras páginas
+if (enterBtn && animatedTitle && mainContent) {
+  const introSubtitle = document.querySelector('.centered-content .subtitle');
+
+  enterBtn.addEventListener('click', () => {
+    // Animar cada letra del título
+    const letters = animatedTitle.innerText.split('');
+    animatedTitle.innerHTML = letters.map(letter => `<span class="letter">${letter}</span>`).join('');
+
+    const letterElements = document.querySelectorAll('.letter');
+    letterElements.forEach((el, index) => {
+      el.style.animationDelay = `${index * 0.1}s`;
+    });
+
+    // Ocultar subtítulo y botón después de iniciar la animación
+    setTimeout(() => {
+      if(introSubtitle) introSubtitle.style.opacity = 0;
+      enterBtn.style.opacity = 0;
+    }, 100);
+
+    // Redirección con transición de color
+    setTimeout(() => {
+      mainContent.classList.add('page-fade-out');
+      document.body.style.transition = 'background-color 0.8s ease';
+      document.body.style.backgroundColor = '#6c63ff';
+
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 700);
+    }, 1000); 
+  });
 }
