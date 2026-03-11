@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. MODO OSCURO
     const darkModeToggle = document.getElementById("darkModeToggle");
     const isDark = localStorage.getItem("darkMode") === "true";
+    
     if (isDark) document.body.classList.add("dark");
     if (darkModeToggle) darkModeToggle.textContent = isDark ? "☀️" : "🌙";
 
@@ -14,11 +15,32 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 2. CONFIGURACIÓN SPOTIFY PKCE
+    // 2. TARJETAS 3D (Efecto Apple)
+    window.apply3DEffect = () => {
+        const cards = document.querySelectorAll('.feature-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -10;
+                const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 10;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
+    };
+    apply3DEffect();
+
+    // 3. CONFIGURACIÓN SPOTIFY PKCE
     const CLIENT_ID = 'c54d0fa62f254d86b2735844b1690a50';
     const REDIRECT_URI = 'https://rbv-utility.es/spotify-summary.html';
     
-    // Variables de estado globales
+    // Variables de estado para los filtros
     window.spotifyToken = '';
     window.currentType = 'artists';
     window.currentTimeRange = 'medium_term';
@@ -39,16 +61,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 scope: 'user-top-read'
             });
 
-            window.location.href = `https://accounts.spotify.com/authorize?client_id=$0{params.toString()}`;
+            // Redirección limpia a Spotify
+            window.location.href = 'https://accounts.spotify.com/authorize?' + params.toString();
         });
     }
 
-    // 3. CAPTURAR CÓDIGO Y CANJEAR TOKEN
+    // 4. CAPTURAR CÓDIGO AL VOLVER DE SPOTIFY
     const code = new URLSearchParams(window.location.search).get('code');
     if (code) {
         const verifier = localStorage.getItem('code_verifier');
         
-        fetch('https://accounts.spotify.com/authorize?client_id=$1', {
+        fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -63,13 +86,15 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             if (data.access_token) {
                 window.spotifyToken = data.access_token;
+                // Limpiar la URL para quitar el código feo
                 window.history.replaceState({}, document.title, window.location.pathname);
                 loadSpotifyData();
             }
-        });
+        })
+        .catch(err => console.error("Error canjeando token:", err));
     }
 
-    // 4. FUNCIÓN MAESTRA DE CARGA
+    // 5. FUNCIÓN MAESTRA DE CARGA DE DATOS
     window.loadSpotifyData = async () => {
         const grid = document.getElementById('stats-grid');
         const title = document.getElementById('stats-title');
@@ -81,12 +106,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if(loading) loading.style.display = 'block';
         if(results) results.style.display = 'block';
 
-        const endpoint = window.currentType === 'artists' ? 'artists' : 'tracks';
-        title.innerText = window.currentType === 'artists' ? 'Tus Artistas Top' : 'Tus Canciones Top';
+        const typeLabel = window.currentType === 'artists' ? 'Artistas' : 'Canciones';
+        title.innerText = 'Tus ' + typeLabel + ' Top';
 
         try {
-            const res = await fetch(`https://accounts.spotify.com/authorize?client_id=$2{endpoint}?limit=20&time_range=${window.currentTimeRange}`, {
-                headers: { 'Authorization': `Bearer ${window.spotifyToken}` }
+            const url = 'https://api.spotify.com/v1/me/top/' + window.currentType + 
+                        '?limit=20&time_range=' + window.currentTimeRange;
+
+            const res = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + window.spotifyToken }
             });
             const data = await res.json();
             
@@ -105,27 +133,30 @@ document.addEventListener("DOMContentLoaded", () => {
             }).join('');
             
             loading.style.display = 'none';
-            if (window.apply3DEffect) window.apply3DEffect(); // Si tienes el efecto 3D activo
+            // Re-activar el 3D en las nuevas tarjetas
+            apply3DEffect();
         } catch (err) {
-            console.error("Error API:", err);
+            console.error("Error API Spotify:", err);
         }
     };
 
-    // AUXILIARES PKCE
-    function generateRandomString(l) {
-        let t = ''; const p = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < l; i++) t += p.charAt(Math.floor(Math.random() * p.length));
-        return t;
+    // FUNCIONES AUXILIARES (Seguridad PKCE)
+    function generateRandomString(length) {
+        let text = '';
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for (let i = 0; i < length; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+        return text;
     }
-    async function generateCodeChallenge(v) {
-        const d = new TextEncoder().encode(v);
-        const hash = await window.crypto.subtle.digest('SHA-256', d);
-        return btoa(String.fromCharCode.apply(null, new Uint8Array(hash)))
+
+    async function generateCodeChallenge(codeVerifier) {
+        const data = new TextEncoder().encode(codeVerifier);
+        const digest = await window.crypto.subtle.digest('SHA-256', data);
+        return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
             .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     }
 });
 
-// FUNCIONES GLOBALES PARA LOS BOTONES
+// FUNCIONES GLOBALES PARA BOTONES (Fuera del DOMContentLoaded)
 function updateType(type) {
     window.currentType = type;
     if (window.spotifyToken) window.loadSpotifyData();
