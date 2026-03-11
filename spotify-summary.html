@@ -28,17 +28,26 @@
       <p>Consultando a los satélites de Spotify...</p>
     </div>
 
-   <div id="stats-results" style="display: none; text-align: left;">
-      <nav class="stats-nav" style="display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center;">
-        <button onclick="changeTab('artists')" class="btn-small">Artistas</button>
-        <button onclick="changeTab('tracks')" class="btn-small">Canciones</button>
-      </nav>
+<div id="stats-results" style="display: none; text-align: center;">
+    <nav class="stats-nav" style="margin-bottom: 1rem;">
+        <button onclick="updateType('artists')" class="btn-small">Artistas</button>
+        <button onclick="updateType('tracks')" class="btn-small">Canciones</button>
+    </nav>
 
-      <h2 id="stats-title" style="margin-bottom: 2rem; color: #6c63ff;">Tus Artistas Top</h2>
-      
-      <div id="stats-grid" class="feature-grid">
-        </div>
+    <div class="time-selector" style="margin-bottom: 2rem;">
+        <button onclick="updateTime('short_term')" class="btn-mini">Último Mes</button>
+        <button onclick="updateTime('medium_term')" class="btn-mini">6 Meses</button>
+        <button onclick="updateTime('long_term')" class="btn-mini">Histórico</button>
     </div>
+
+    <h2 id="stats-title" style="color: #6c63ff; margin-bottom: 0.5rem;">Tus Artistas Top</h2>
+    <p style="font-size: 0.7rem; color: #888; margin-bottom: 2rem; font-style: italic;">
+        * Nota: Los datos son proporcionados por la API de Spotify y pueden variar según el algoritmo de actualización.
+    </p>
+    
+    <div id="stats-grid" class="feature-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+    </div>
+</div>
 
   </main>
 
