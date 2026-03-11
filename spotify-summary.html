@@ -1,97 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-JLC1M55S7T"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-JLC1M55S7T');
-</script>
-  <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-W8S22RDD');</script>
-<!-- End Google Tag Manager -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Resumen Spotify | RBV Utility</title>
+  <title>Spotify Stats | RBV Utility</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W8S22RDD"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+<body class="dark">
+  <div class="bg-circles" aria-hidden="true"><div class="circle circle1"></div><div class="circle circle2"></div></div>
 
-  <!-- Fondo animado -->
-  <div class="bg-circles" aria-hidden="true">
-    <div class="circle circle1"></div>
-    <div class="circle circle2"></div>
-    <div class="circle circle3"></div>
-  </div>
-
-  <!-- Header con menú superior -->
-  <header class="banner" aria-label="Logo principal y navegación">
-    <span class="logo">R² Utility</span>
-    <nav class="topnav" aria-label="Navegación principal">
-      <a href="home.html">Inicio</a>
-      <button class="dropdown-trigger" id="servicios-btn" aria-haspopup="true" aria-expanded="false">Servicios ▾</button>
-      <div class="dropdown-menu" id="servicios-submenu" role="menu" aria-labelledby="servicios-btn">
-        <a href="spotify-summary.html" role="menuitem">Resumen Spotify</a>
-      </div>
-      <a href="#">Configuración</a>
-      <a href="contacto.html">Contacto</a>
-      <button id="darkModeToggle" title="Cambiar modo">🌙</button>
-    </nav>
+  <header class="banner">
+    <span class="logo">R<span style="color: #6c63ff;">²</span>Utility</span>
+    <nav class="topnav"><a href="home.html">Dashboard</a></nav>
   </header>
 
-  <!-- Contenido principal -->
-  <main class="container" role="main" tabindex="-1">
-    <h1>Solicita tu resumen de Spotify</h1>
-    <p class="subtitle">Inicia sesión con Spotify y recibe tu resumen personalizado.</p>
+  <main class="container">
+    <h1>Tu Top Musical</h1>
+    <p class="subtitle">Estadísticas en tiempo real de tu cuenta de Spotify.</p>
 
-    <!-- Formulario: Correo + Tipo de resumen -->
-    <form id="resumenForm">
-      <select id="tipoResumen" name="tipoResumen" aria-label="Tipo de resumen">
-        <option value="semanal">Semanal</option>
-        <option value="mensual">Mensual</option>
-        <option value="anual">Anual</option>
-      </select>
-      <input type="email" id="email" name="email" placeholder="Tu correo electrónico" aria-label="Correo electrónico" required />
-      <button type="submit" class="btn-glow">Continuar con Spotify</button>
-      <p id="message" role="alert" aria-live="assertive" class="message"></p>
-    </form>
+    <div id="login-section">
+      <button id="btn-spotify-login" class="btn-glow" style="background-color: #1db954;">
+        Conectar con Spotify
+      </button>
+    </div>
+
+    <div id="loading-stats" style="display: none;">
+      <p>Consultando a los satélites de Spotify...</p>
+    </div>
+
+    <div id="stats-results" style="display: none; text-align: left;">
+      <h2 style="margin-bottom: 2rem; color: #6c63ff;">Tus 10 Artistas Top</h2>
+      <div id="artists-grid" class="feature-grid">
+        </div>
+    </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p class="footer-text">
-      &copy; 2025 R² Utility. Todos los derechos reservados.
-    </p>
-    <p class="footer-links">
-      <a href="#" class="footer-link">Política de privacidad</a>  
-      <span class="footer-separator">|</span>
-      <a href="#" class="footer-link">Términos de uso</a>
-      <span class="footer-separator">|</span>
-      <a href="contacto.html" class="footer-link">Contacto</a>
-    </p>
-    <!-- Redes sociales -->
-    <div class="footer-social">
-      <a href="#" class="footer-link" aria-label="Twitter">🐦 Twitter</a>
-      <span class="footer-separator">•</span>
-      <a href="#" class="footer-link" aria-label="GitHub">💻 GitHub</a>
-      <span class="footer-separator">•</span>
-      <a href="#" class="footer-link" aria-label="LinkedIn">💼 LinkedIn</a>
-    </div>
-  </footer>
-
-
-  <!-- Script JS Compartido -->
   <script src="script.js"></script>
 </body>
 </html>

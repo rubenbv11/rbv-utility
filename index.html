@@ -11,24 +11,95 @@
   
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RBV Utility</title>
-  
+  <title>Dashboard | RBV Utility</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
+  
   <div class="bg-circles" aria-hidden="true">
     <div class="circle circle1"></div>
     <div class="circle circle2"></div>
     <div class="circle circle3"></div>
   </div>
+ 
+  <header class="banner" aria-label="Logo principal y navegación">
+    <span class="logo">R<span style="color: #6c63ff;">²</span>Utility</span>
+    <nav class="topnav" aria-label="Navegación principal">
+      <a href="home.html" class="active" aria-current="page">Dashboard</a>
+      <button class="dropdown-trigger" id="servicios-btn" aria-haspopup="true" aria-expanded="false">Herramientas ▾</button>
+      <div class="dropdown-menu" id="servicios-submenu" role="menu" aria-labelledby="servicios-btn">
+        <a href="spotify-summary.html" role="menuitem">Resumen Spotify</a>
+      </div>
+      <a href="contacto.html">Contacto</a>
+      <button id="darkModeToggle" title="Cambiar modo">🌙</button>
+    </nav>
+  </header>
 
-  <div class="centered-content" role="main">
-    <h1 id="animatedTitle">R<sup>2</sup> Utility</h1>
-    <p class="subtitle">Herramientas personales únicas diseñadas para tus necesidades.</p>
-    <button id="enterBtn" class="btn-glow" aria-label="Entrar a la aplicación">Entrar</button>
-  </div>
+  <main class="container flex-grow" role="main" tabindex="-1">
+    
+    <div class="dashboard-header" style="text-align: left; margin-bottom: 3rem;">
+      <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Panel de Control <span class="title-r">R<span class="title-superscript">2</span></span></h1>
+      <p class="subtitle" style="text-align: left; margin: 0; max-width: 100%;">Centro de operaciones del servidor. Selecciona un servicio para acceder.</p>
+    </div>
 
-  
+    <section class="features" style="text-align: left;">
+      <h2 style="font-size: 1.5rem; color: #6b7280; border-bottom: 1px solid #d1d5db; padding-bottom: 0.5rem;">Servidores Activos</h2>
+      
+      <div class="feature-grid">
+        
+        <div class="feature-card">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.4rem;">🍿 Jellyfin</h3>
+            <span class="status-badge online">En línea</span>
+          </div>
+          <p style="font-size: 0.95rem;">Centro multimedia central. Películas, series, documentales y canales de televisión en directo.</p>
+          <a href="https://jellyfin.rbv-utility.es" target="_blank" class="btn-small" style="width: 100%; text-align: center;">Acceder al Servidor</a>
+        </div>
+
+        <div class="feature-card">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.4rem;">🎵 Maloja</h3>
+            <span class="status-badge maintenance">Configurando</span>
+          </div>
+          <p style="font-size: 0.95rem;">Tu servidor de música personal. Historial de escuchas y estadísticas avanzadas estilo Spotify.</p>
+          <a href="#" class="btn-small" style="width: 100%; text-align: center; opacity: 0.5; cursor: not-allowed;">Próximamente</a>
+        </div>
+
+        <div class="feature-card">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.4rem;">📁 CloudBox</h3>
+            <span class="status-badge maintenance">Configurando</span>
+          </div>
+          <p style="font-size: 0.95rem;">Gestor de archivos remoto. Accede a los discos duros del servidor desde cualquier parte.</p>
+          <a href="#" class="btn-small" style="width: 100%; text-align: center; opacity: 0.5; cursor: not-allowed;">Próximamente</a>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="features" style="text-align: left; margin-top: 4rem;">
+      <h2 style="font-size: 1.5rem; color: #6b7280; border-bottom: 1px solid #d1d5db; padding-bottom: 0.5rem;">Utilidades Web</h2>
+      
+      <div class="feature-grid">
+        
+        <div class="feature-card">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.4rem;">🎧 Spotify Stats</h3>
+            <span class="status-badge online">API Activa</span>
+          </div>
+          <p style="font-size: 0.95rem;">Conecta tu cuenta de Spotify y solicita un informe detallado con tus artistas y canciones más escuchadas.</p>
+          <a href="spotify-summary.html" class="btn-small" style="width: 100%; text-align: center; background-color: #1db954; color: white; border-color: #1db954;">Generar Resumen</a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p class="footer-text">&copy; 2026 R² Utility. Servidor privado.</p>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
