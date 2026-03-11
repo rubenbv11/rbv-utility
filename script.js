@@ -149,4 +149,53 @@ document.addEventListener("DOMContentLoaded", () => {
     return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
       .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
+let currentToken = '';
+
+// Modifica la función fetchSpotifyStats para que sea genérica
+async function fetchSpotifyData(type = 'artists') {
+    const loadingSec = document.getElementById('loading-stats');
+    const grid = document.getElementById('stats-grid');
+    const title = document.getElementById('stats-title');
+    
+    if(loadingSec) loadingSec.style.display = 'block';
+    grid.innerHTML = ''; // Limpiamos lo anterior
+
+    const endpoint = type === 'artists' ? 'top/artists' : 'top/tracks';
+    title.innerText = type === 'artists' ? 'Tus Artistas Top' : 'Tus Canciones Top';
+
+    try {
+        const response = await fetch(`https://api.spotify.com/v1/me/${endpoint}?limit=20`, {
+            headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const data = await response.json();
+        
+        grid.innerHTML = data.items.map(item => {
+            // Si es canción, pillamos la carátula del álbum; si es artista, su foto.
+            const imgUrl = type === 'artists' ? item.images[0].url : item.album.images[0].url;
+            const subText = type === 'artists' ? item.genres.slice(0, 2).join(', ') : item.artists[0].name;
+
+            return `
+                <div class="feature-card">
+                    <img src="${imgUrl}" style="width: 100%; border-radius: 12px; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; font-size: 1.1rem;">${item.name}</h3>
+                    <p style="font-size: 0.8rem; color: #6c63ff;">${subText}</p>
+                </div>
+            `;
+        }).join('');
+        
+        if(loadingSec) loadingSec.style.display = 'none';
+        document.getElementById('stats-results').style.display = 'block';
+        apply3DEffect(); // Para que el 3D funcione en las nuevas cartas
+    } catch (err) {
+        console.error("Error pillando data:", err);
+    }
+}
+
+// Función para cambiar de pestaña
+function changeTab(type) {
+    fetchSpotifyData(type);
+}
+
+
 });
+

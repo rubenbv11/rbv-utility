@@ -28,9 +28,15 @@
       <p>Consultando a los satélites de Spotify...</p>
     </div>
 
-    <div id="stats-results" style="display: none; text-align: left;">
-      <h2 style="margin-bottom: 2rem; color: #6c63ff;">Tus 10 Artistas Top</h2>
-      <div id="artists-grid" class="feature-grid">
+   <div id="stats-results" style="display: none; text-align: left;">
+      <nav class="stats-nav" style="display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center;">
+        <button onclick="changeTab('artists')" class="btn-small">Artistas</button>
+        <button onclick="changeTab('tracks')" class="btn-small">Canciones</button>
+      </nav>
+
+      <h2 id="stats-title" style="margin-bottom: 2rem; color: #6c63ff;">Tus Artistas Top</h2>
+      
+      <div id="stats-grid" class="feature-grid">
         </div>
     </div>
   </main>
